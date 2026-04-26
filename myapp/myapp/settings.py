@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # Store this in your .env file locally, and in Railway's Variables tab in production.
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY', 'temporary-secret-key-for-testing-only')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # Set DEBUG=True in your local .env only. Leave it unset (or False) on Railway.
