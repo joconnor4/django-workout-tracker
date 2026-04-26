@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+{% block title %}Home{% endblock %}
+{% block nav_home %}active{% endblock %}
+{% block content %}
+<h1>🏋️ Workout Tracker</h1>
+<div class="stat-grid">
+    <div class="stat-card"><div class="stat-num">{{ athlete_count }}</div><div class="stat-label">Athletes</div></div>
+    <div class="stat-card"><div class="stat-num">{{ workout_count }}</div><div class="stat-label">Workouts</div></div>
+    <div class="stat-card"><div class="stat-num">{{ record_count }}</div><div class="stat-label">Records Logged</div></div>
+</div>
+<div class="card">
+    <h2>Quick Links</h2>
+    <p style="color:#8b949e;margin-bottom:1rem;">Get started by managing your data.</p>
+    <a href="/workouts/" class="btn btn-primary" style="margin-right:0.5rem;">🏃 Manage Workouts</a>
+    <a href="/records/" class="btn btn-secondary" style="margin-right:0.5rem;">📋 Workout Records</a>
+    <a href="/admin/core/athlete/" class="btn btn-secondary">🏅 Manage Athletes</a>
+</div>
+{% endblock %}

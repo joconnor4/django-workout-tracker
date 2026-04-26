@@ -1,0 +1,63 @@
+{% extends 'core/base.html' %}
+{% block title %}Manage Workouts{% endblock %}
+{% block nav_workouts %}active{% endblock %}
+{% block content %}
+<h1>🏃 Manage Workouts</h1>
+<div class="card">
+    <h2>Add New Workout <span class="badge badge-add">New</span></h2>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="add">
+        <div class="form-row">
+            <div><label>Workout Name *</label><input type="text" name="workout_name" maxlength="20" placeholder="5K Tempo Run" required></div>
+            <div><label>Workout Type *</label><input type="text" name="workout_type" maxlength="20" placeholder="Cardio" required></div>
+        </div>
+        <button type="submit" class="btn btn-primary">➕ Add Workout</button>
+    </form>
+</div>
+{% if edit_workout %}
+<div class="card">
+    <h2>Edit Workout <span class="badge badge-edit">Editing</span></h2>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="edit">
+        <input type="hidden" name="workout_id" value="{{ edit_workout.workoutid }}">
+        <div class="form-row">
+            <div><label>Workout Name *</label><input type="text" name="workout_name" value="{{ edit_workout.workout_name }}" maxlength="20" required></div>
+            <div><label>Workout Type *</label><input type="text" name="workout_type" value="{{ edit_workout.workout_type }}" maxlength="20" required></div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-right:0.5rem;">💾 Save Changes</button>
+        <a href="/workouts/" class="btn btn-secondary">✕ Cancel</a>
+    </form>
+</div>
+{% endif %}
+<hr>
+<h2>Current Workouts</h2>
+{% if workouts %}
+<div class="card" style="padding:0;">
+    <table>
+        <thead><tr><th>ID</th><th>Workout Name</th><th>Type</th><th>Edit</th><th>Delete</th></tr></thead>
+        <tbody>
+        {% for w in workouts %}
+        <tr>
+            <td style="color:#8b949e;font-family:'DM Mono',monospace;font-size:0.82rem;">{{ w.workoutid }}</td>
+            <td><strong>{{ w.workout_name }}</strong></td>
+            <td><span class="type-pill">{{ w.workout_type }}</span></td>
+            <td><a href="/workouts/?edit={{ w.workoutid }}" class="btn btn-secondary" style="padding:0.3rem 0.8rem;font-size:0.82rem;">✏️ Edit</a></td>
+            <td>
+                <form method="post" onsubmit="return confirm('Delete {{ w.workout_name }}? This will also remove all associated records.');">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="workout_id" value="{{ w.workoutid }}">
+                    <button type="submit" class="btn btn-danger" style="padding:0.3rem 0.8rem;font-size:0.82rem;">🗑️ Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p style="color:#8b949e;">No workouts found. Add your first workout above.</p>
+{% endif %}
+{% endblock %}

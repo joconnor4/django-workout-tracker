@@ -1,0 +1,95 @@
+{% extends 'core/base.html' %}
+{% block title %}Workout Records{% endblock %}
+{% block nav_records %}active{% endblock %}
+{% block content %}
+<h1>📋 Workout Records</h1>
+<div class="card">
+    <h2>Log a Workout Session <span class="badge badge-add">New</span></h2>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="add">
+        <div class="form-row">
+            <div>
+                <label>Athlete *</label>
+                <select name="athlete_id" required>
+                    <option value="">— select athlete —</option>
+                    {% for a in athletes %}<option value="{{ a.athleteid }}">{{ a.athlete_name }}</option>{% endfor %}
+                </select>
+            </div>
+            <div>
+                <label>Workout *</label>
+                <select name="workout_id" required>
+                    <option value="">— select workout —</option>
+                    {% for w in workouts %}<option value="{{ w.workoutid }}">{{ w.workout_name }} ({{ w.workout_type }})</option>{% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div><label>Duration *</label><input type="text" name="duration" placeholder="45:00" required></div>
+            <div><label>Pace *</label><input type="text" name="pace" placeholder="8:30 /mi" required></div>
+        </div>
+        <label>Average Heart Rate * (bpm)</label>
+        <input type="number" name="avg_hr" placeholder="155" min="1" max="300" required>
+        <button type="submit" class="btn btn-primary">💾 Log Workout</button>
+    </form>
+</div>
+{% if edit_record %}
+<div class="card">
+    <h2>Edit Record <span class="badge badge-edit">Editing</span></h2>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="edit">
+        <input type="hidden" name="athlete_id" value="{{ edit_record.athlete_id }}">
+        <input type="hidden" name="workout_id" value="{{ edit_record.workout_id }}">
+        <p style="color:#8b949e;font-family:'DM Mono',monospace;font-size:0.8rem;margin-bottom:1rem;">{{ edit_record.athlete.athlete_name }} — {{ edit_record.workout.workout_name }}</p>
+        <div class="form-row">
+            <div><label>Duration *</label><input type="text" name="duration" value="{{ edit_record.duration }}" required></div>
+            <div><label>Pace *</label><input type="text" name="pace" value="{{ edit_record.pace }}" required></div>
+        </div>
+        <label>Average Heart Rate * (bpm)</label>
+        <input type="number" name="avg_hr" value="{{ edit_record.average_hr }}" min="1" max="300" required>
+        <button type="submit" class="btn btn-primary" style="margin-right:0.5rem;">💾 Save Changes</button>
+        <a href="/records/" class="btn btn-secondary">✕ Cancel</a>
+    </form>
+</div>
+{% endif %}
+<hr>
+<h2>All Workout Records</h2>
+<div style="margin-bottom:1rem;">
+    {% for t in workout_types %}
+    <a href="/records/?type={{ t }}" class="btn btn-secondary" style="padding:0.2rem 0.8rem;font-size:0.8rem;margin-right:0.3rem;{% if filter_type == t %}border-color:#58a6ff;color:#58a6ff;{% endif %}">{{ t }}</a>
+    {% endfor %}
+    <a href="/records/" class="btn btn-secondary" style="padding:0.2rem 0.8rem;font-size:0.8rem;{% if filter_type == 'All' %}border-color:#58a6ff;color:#58a6ff;{% endif %}">All</a>
+</div>
+{% if records %}
+<div class="card" style="padding:0;">
+    <table>
+        <thead><tr><th>Athlete</th><th>Workout</th><th>Type</th><th>Duration</th><th>Pace</th><th>Avg HR</th><th>Edit</th><th>Delete</th></tr></thead>
+        <tbody>
+        {% for r in records %}
+        <tr>
+            <td><strong>{{ r.athlete.athlete_name }}</strong></td>
+            <td>{{ r.workout.workout_name }}</td>
+            <td><span class="type-pill">{{ r.workout.workout_type }}</span></td>
+            <td>{{ r.duration|default:"—" }}</td>
+            <td>{{ r.pace|default:"—" }}</td>
+            <td style="font-family:'DM Mono',monospace;">{{ r.average_hr|default:"—" }}</td>
+            <td><a href="/records/?edit={{ r.athlete_id }}_{{ r.workout_id }}" class="btn btn-secondary" style="padding:0.3rem 0.8rem;font-size:0.82rem;">✏️</a></td>
+            <td>
+                <form method="post" onsubmit="return confirm('Delete this record?');">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="athlete_id" value="{{ r.athlete_id }}">
+                    <input type="hidden" name="workout_id" value="{{ r.workout_id }}">
+                    <button type="submit" class="btn btn-danger" style="padding:0.3rem 0.8rem;font-size:0.82rem;">🗑️</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p style="color:#8b949e;">No records found.</p>
+{% endif %}
+{% endblock %}

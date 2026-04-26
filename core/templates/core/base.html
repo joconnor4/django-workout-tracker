@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Workout Tracker{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Barlow', sans-serif; background: #0d1117; color: #e6edf3; min-height: 100vh; }
+        nav { background: #161b22; border-bottom: 1px solid #21262d; padding: 0 2rem; display: flex; align-items: center; gap: 2rem; height: 56px; }
+        nav a { color: #8b949e; text-decoration: none; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 0.95rem; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.4rem 0; border-bottom: 2px solid transparent; transition: all 0.15s; }
+        nav a:hover, nav a.active { color: #58a6ff; border-bottom-color: #58a6ff; }
+        nav .brand { color: #e6edf3; font-size: 1.1rem; margin-right: auto; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+        h1 { font-family: 'Barlow Condensed', sans-serif; font-size: 2.4rem; font-weight: 700; color: #58a6ff; border-bottom: 2px solid #21262d; padding-bottom: 0.4rem; margin-bottom: 1.4rem; }
+        h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 600; color: #c9d1d9; margin-bottom: 1rem; }
+        .card { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 1.6rem; margin-bottom: 1.5rem; }
+        label { font-family: 'DM Mono', monospace; font-size: 0.76rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 0.3rem; }
+        input, select { width: 100%; background: #0d1117; color: #e6edf3; border: 1px solid #30363d; border-radius: 6px; padding: 0.5rem 0.75rem; font-family: 'Barlow', sans-serif; font-size: 0.95rem; margin-bottom: 1rem; }
+        input:focus, select:focus { outline: none; border-color: #58a6ff; box-shadow: 0 0 0 3px rgba(88,166,255,0.15); }
+        .btn { font-family: 'Barlow Condensed', sans-serif; font-weight: 600; letter-spacing: 0.06em; border-radius: 6px; padding: 0.5rem 1.2rem; border: none; cursor: pointer; font-size: 0.95rem; transition: all 0.18s; text-decoration: none; display: inline-block; }
+        .btn-primary { background: #238636; color: #fff; border: 1px solid #2ea043; }
+        .btn-primary:hover { background: #2ea043; transform: translateY(-1px); }
+        .btn-secondary { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; }
+        .btn-danger { background: #6e2020; color: #ffa198; border: 1px solid #8b2020; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .messages { margin-bottom: 1rem; }
+        .msg { padding: 0.6rem 1rem; border-radius: 6px; margin-bottom: 0.5rem; font-size: 0.9rem; }
+        .msg-success { background: #0f2d1f; color: #3fb950; border: 1px solid #238636; }
+        .msg-error   { background: #2d1a1a; color: #ffa198; border: 1px solid #6e2020; }
+        .badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; margin-left: 0.5rem; vertical-align: middle; }
+        .badge-add  { background: #0f2d1f; color: #3fb950; border: 1px solid #238636; }
+        .badge-edit { background: #1c1a0f; color: #e3b341; border: 1px solid #9e6a03; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+        th { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: #58a6ff; text-transform: uppercase; letter-spacing: 0.07em; padding: 0.5rem 0.75rem; border-bottom: 2px solid #21262d; text-align: left; }
+        td { padding: 0.6rem 0.75rem; border-bottom: 1px solid #21262d; }
+        tr:hover td { background: #1c2128; }
+        .type-pill { background: #1c2128; padding: 2px 8px; border-radius: 12px; color: #79c0ff; border: 1px solid #30363d; font-family: 'DM Mono', monospace; font-size: 0.8rem; }
+        hr { border: none; border-top: 1px solid #21262d; margin: 1.5rem 0; }
+        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-card { background: #161b22; border: 1px solid #21262d; border-radius: 10px; padding: 1.4rem; text-align: center; }
+        .stat-num { font-family: 'Barlow Condensed', sans-serif; font-size: 2.8rem; font-weight: 700; color: #58a6ff; }
+        .stat-label { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: #8b949e; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.3rem; }
+    </style>
+</head>
+<body>
+<nav>
+    <span class="brand">🏋️ Workout Tracker</span>
+    <a href="/" class="{% block nav_home %}{% endblock %}">Home</a>
+    <a href="/workouts/" class="{% block nav_workouts %}{% endblock %}">Workouts</a>
+    <a href="/records/" class="{% block nav_records %}{% endblock %}">Records</a>
+    <a href="/admin/">Admin</a>
+</nav>
+<div class="container">
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="msg {% if message.tags == 'error' %}msg-error{% else %}msg-success{% endif %}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+</div>
+</body>
+</html>
